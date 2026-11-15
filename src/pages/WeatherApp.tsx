@@ -66,8 +66,6 @@ interface ForecastData {
   }>;
 }
 
-const API_KEY = '8d6454e6c3b540de9e1131424241907';
-const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
 const weatherIcons: Record<string, LucideIcon> = {
   Clear: Sun,
@@ -124,26 +122,16 @@ export default function WeatherApp() {
     setError('');
 
     try {
-      // Fetch current weather
-      const weatherRes = await fetch(
-        `${BASE_URL}/weather?q=${searchCity}&appid=${API_KEY}&units=metric`
-      );
+      const response = await fetch(`/api/weather?city=${encodeURIComponent(searchCity.trim())}`);
+      const payload = await response.json();
 
-      if (!weatherRes.ok) {
-        throw new Error('City not found');
+      if (!response.ok) {
+        throw new Error(payload.error || 'Unable to fetch weather data.');
       }
 
-      const weatherData = await weatherRes.json();
-      setWeather(weatherData);
-
-      // Fetch forecast
-      const forecastRes = await fetch(
-        `${BASE_URL}/forecast?q=${searchCity}&appid=${API_KEY}&units=metric`
-      );
-      const forecastData = await forecastRes.json();
-      setForecast(forecastData);
-
-      saveRecentSearch(weatherData.name);
+      setWeather(payload.weather);
+      setForecast(payload.forecast);
+      saveRecentSearch(payload.weather.name);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch weather data');
       setWeather(null);
@@ -165,12 +153,17 @@ export default function WeatherApp() {
         async (position) => {
           const { latitude, longitude } = position.coords;
           try {
-            const weatherRes = await fetch(
-              `${BASE_URL}/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
-            );
-            const weatherData = await weatherRes.json();
-            setCity(weatherData.name);
-            fetchWeather(weatherData.name);
+            const response = await fetch(`/api/weather?lat=${latitude}&lon=${longitude}`);
+            const payload = await response.json();
+            if (!response.ok) {
+              throw new Error(payload.error || 'Unable to fetch weather for your location.');
+            }
+            setCity(payload.weather.name);
+            setWeather(payload.weather);
+            setForecast(payload.forecast);
+            saveRecentSearch(payload.weather.name);
+            setError('');
+            setLoading(false);
           } catch {
             setError('Failed to fetch weather for your location');
             setLoading(false);
