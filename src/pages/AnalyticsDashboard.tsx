@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
 import {
   ArrowLeft,
   TrendingUp,
@@ -15,7 +16,6 @@ import {
   Filter,
 } from 'lucide-react';
 import {
-  LineChart,
   Line,
   BarChart,
   Bar,
@@ -101,7 +101,7 @@ interface MetricCardProps {
   title: string;
   value: string;
   change: number;
-  icon: React.ComponentType<any>;
+  icon: LucideIcon;
   color: string;
 }
 
