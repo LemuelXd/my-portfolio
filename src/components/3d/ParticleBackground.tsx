@@ -6,9 +6,16 @@ interface ParticlesProps {
   count?: number;
 }
 
+// Stable pseudo-random values keep geometry deterministic across React renders.
+function seededRandom(seed: number): number {
+  const value = Math.sin(seed * 12.9898) * 43758.5453;
+  return value - Math.floor(value);
+}
+
 function Particles({ count = 100 }: ParticlesProps) {
   const mesh = useRef<THREE.Points>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
+  const velocitiesRef = useRef<Float32Array | null>(null);
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -28,32 +35,36 @@ function Particles({ count = 100 }: ParticlesProps) {
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      pos[i3] = (Math.random() - 0.5) * 20;
-      pos[i3 + 1] = (Math.random() - 0.5) * 20;
-      pos[i3 + 2] = (Math.random() - 0.5) * 10;
+      pos[i3] = (seededRandom(i3 + 1) - 0.5) * 20;
+      pos[i3 + 1] = (seededRandom(i3 + 2) - 0.5) * 20;
+      pos[i3 + 2] = (seededRandom(i3 + 3) - 0.5) * 10;
 
-      vel[i3] = (Math.random() - 0.5) * 0.01;
-      vel[i3 + 1] = (Math.random() - 0.5) * 0.01;
-      vel[i3 + 2] = (Math.random() - 0.5) * 0.005;
+      vel[i3] = (seededRandom(i3 + 4) - 0.5) * 0.01;
+      vel[i3 + 1] = (seededRandom(i3 + 5) - 0.5) * 0.01;
+      vel[i3 + 2] = (seededRandom(i3 + 6) - 0.5) * 0.005;
     }
 
     return [pos, vel];
   }, [count]);
 
+  useEffect(() => {
+    velocitiesRef.current = velocities;
+  }, [velocities]);
+
   useFrame((state) => {
-    if (!mesh.current) return;
+    if (!mesh.current || !velocitiesRef.current) return;
 
     const positionAttribute = mesh.current.geometry.attributes.position;
     const positionArray = positionAttribute.array as Float32Array;
+    const velocitiesArray = velocitiesRef.current;
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
 
-      positionArray[i3] += velocities[i3];
-      positionArray[i3 + 1] += velocities[i3 + 1];
-      positionArray[i3 + 2] += velocities[i3 + 2];
+      positionArray[i3] += velocitiesArray[i3];
+      positionArray[i3 + 1] += velocitiesArray[i3 + 1];
+      positionArray[i3 + 2] += velocitiesArray[i3 + 2];
 
-      // Mouse interaction
       const dx = mouseRef.current.x * 5 - positionArray[i3];
       const dy = mouseRef.current.y * 5 - positionArray[i3 + 1];
       const dist = Math.sqrt(dx * dx + dy * dy);
@@ -63,10 +74,9 @@ function Particles({ count = 100 }: ParticlesProps) {
         positionArray[i3 + 1] -= dy * 0.01;
       }
 
-      // Boundary check
-      if (Math.abs(positionArray[i3]) > 10) velocities[i3] *= -1;
-      if (Math.abs(positionArray[i3 + 1]) > 10) velocities[i3 + 1] *= -1;
-      if (Math.abs(positionArray[i3 + 2]) > 5) velocities[i3 + 2] *= -1;
+      if (Math.abs(positionArray[i3]) > 10) velocitiesArray[i3] *= -1;
+      if (Math.abs(positionArray[i3 + 1]) > 10) velocitiesArray[i3 + 1] *= -1;
+      if (Math.abs(positionArray[i3 + 2]) > 5) velocitiesArray[i3 + 2] *= -1;
     }
 
     positionAttribute.needsUpdate = true;
@@ -97,13 +107,13 @@ function ConnectionLines({ count = 100 }: ParticlesProps) {
   const linesRef = useRef<THREE.LineSegments>(null);
   const particlePositions = useRef<Float32Array | null>(null);
 
-  useMemo(() => {
+  useEffect(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      pos[i3] = (Math.random() - 0.5) * 20;
-      pos[i3 + 1] = (Math.random() - 0.5) * 20;
-      pos[i3 + 2] = (Math.random() - 0.5) * 10;
+      pos[i3] = (seededRandom(10000 + i3 + 1) - 0.5) * 20;
+      pos[i3 + 1] = (seededRandom(10000 + i3 + 2) - 0.5) * 20;
+      pos[i3 + 2] = (seededRandom(10000 + i3 + 3) - 0.5) * 10;
     }
     particlePositions.current = pos;
   }, [count]);
@@ -119,6 +129,7 @@ function ConnectionLines({ count = 100 }: ParticlesProps) {
     if (!linesRef.current || !particlePositions.current) return;
 
     const linePositions = linesRef.current.geometry.attributes.position.array as Float32Array;
+    const points = particlePositions.current;
     let lineIndex = 0;
     const maxDistance = 2;
 
@@ -127,23 +138,22 @@ function ConnectionLines({ count = 100 }: ParticlesProps) {
         const i3 = i * 3;
         const j3 = j * 3;
 
-        const dx = particlePositions.current[i3] - particlePositions.current[j3];
-        const dy = particlePositions.current[i3 + 1] - particlePositions.current[j3 + 1];
-        const dz = particlePositions.current[i3 + 2] - particlePositions.current[j3 + 2];
+        const dx = points[i3] - points[j3];
+        const dy = points[i3 + 1] - points[j3 + 1];
+        const dz = points[i3 + 2] - points[j3 + 2];
         const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
         if (dist < maxDistance && lineIndex < linePositions.length - 6) {
-          linePositions[lineIndex++] = particlePositions.current[i3];
-          linePositions[lineIndex++] = particlePositions.current[i3 + 1];
-          linePositions[lineIndex++] = particlePositions.current[i3 + 2];
-          linePositions[lineIndex++] = particlePositions.current[j3];
-          linePositions[lineIndex++] = particlePositions.current[j3 + 1];
-          linePositions[lineIndex++] = particlePositions.current[j3 + 2];
+          linePositions[lineIndex++] = points[i3];
+          linePositions[lineIndex++] = points[i3 + 1];
+          linePositions[lineIndex++] = points[i3 + 2];
+          linePositions[lineIndex++] = points[j3];
+          linePositions[lineIndex++] = points[j3 + 1];
+          linePositions[lineIndex++] = points[j3 + 2];
         }
       }
     }
 
-    // Clear remaining positions
     for (let i = lineIndex; i < linePositions.length; i++) {
       linePositions[i] = 0;
     }
@@ -197,11 +207,7 @@ function FloatingPyramid() {
 export default function ParticleBackground() {
   return (
     <div className="fixed inset-0 -z-10">
-      <Canvas
-        camera={{ position: [0, 0, 8], fov: 75 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true }}
-      >
+      <Canvas camera={{ position: [0, 0, 8], fov: 75 }} dpr={[1, 2]} gl={{ antialias: true, alpha: true }}>
         <ambientLight intensity={0.5} />
         <Particles count={80} />
         <ConnectionLines count={80} />

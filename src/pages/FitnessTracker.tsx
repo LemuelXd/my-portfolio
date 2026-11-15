@@ -72,7 +72,15 @@ const itemVariants = {
 };
 
 export default function FitnessTracker() {
-  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [workouts, setWorkouts] = useState<Workout[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const saved = window.localStorage.getItem('fitnessWorkouts');
+      return saved ? (JSON.parse(saved) as Workout[]) : [];
+    } catch {
+      return [];
+    }
+  });
   const [showAddModal, setShowAddModal] = useState(false);
   const [newWorkout, setNewWorkout] = useState({
     name: '',
@@ -80,20 +88,13 @@ export default function FitnessTracker() {
     calories: '',
     category: 'Cardio',
   });
-  const [dailyGoal, setDailyGoal] = useState(500);
+  const [dailyGoal, setDailyGoal] = useState(() => {
+    if (typeof window === 'undefined') return 500;
+    const saved = window.localStorage.getItem('fitnessDailyGoal');
+    const parsed = saved ? Number.parseInt(saved, 10) : 500;
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 500;
+  });
   const [showGoalModal, setShowGoalModal] = useState(false);
-
-  // Load workouts from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('fitnessWorkouts');
-    if (saved) {
-      setWorkouts(JSON.parse(saved));
-    }
-    const savedGoal = localStorage.getItem('fitnessDailyGoal');
-    if (savedGoal) {
-      setDailyGoal(parseInt(savedGoal, 10));
-    }
-  }, []);
 
   // Save workouts to localStorage
   useEffect(() => {

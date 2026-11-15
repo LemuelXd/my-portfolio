@@ -1,5 +1,6 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
+import type { IconType } from 'react-icons';
 import {
   SiReact,
   SiTypescript,
@@ -40,7 +41,7 @@ const itemVariants = {
 
 interface Skill {
   name: string;
-  icon: React.ComponentType<any>;
+  icon: IconType;
   level: number;
   color: string;
   twColor: string;

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Github, ArrowRight, Dumbbell, BarChart3, ExternalLink } from 'lucide-react';
+import { Github, ArrowRight, Dumbbell, BarChart3, ExternalLink, type LucideIcon } from 'lucide-react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -29,7 +29,7 @@ interface Project {
   id: string;
   title: string;
   description: string;
-  icon: React.ComponentType<any>;
+  icon: LucideIcon;
   techStack: string[];
   githubUrl: string;
   internalLink?: string;
@@ -104,9 +104,7 @@ function ProjectCardContent({ project }: { project: Project }) {
           transition={{ duration: 0.3 }}
           className="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center"
         >
-          <project.icon 
-            // @ts-ignore
-            className="w-10 h-10 text-cyan-400" />
+          <project.icon className="w-10 h-10 text-cyan-400" />
         </motion.div>
       </div>
 

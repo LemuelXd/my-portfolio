@@ -1,6 +1,5 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import emailjs from '@emailjs/browser';
 import {
   Mail,
   MapPin,
@@ -58,7 +57,6 @@ const socialLinks = [
 ];
 
 export default function Contact() {
-  const formRef = useRef<HTMLFormElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -100,26 +98,31 @@ export default function Contact() {
     setSubmitStatus('idle');
 
     try {
-      // Using EmailJS - replace with your actual service details
-      await emailjs.send(
-        'service_default', // Replace with your service ID
-        'template_default', // Replace with your template ID
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+      if (!serviceId || !templateId || !publicKey) {
+        throw new Error('Contact form is not configured yet. Please email me directly.');
+      }
+
+      await (await import('@emailjs/browser')).default.send(
+        serviceId,
+        templateId,
         {
           from_name: formData.name,
           from_email: formData.email,
           message: formData.message,
           to_email: 'njorogelem@gmail.com',
         },
-        'your_public_key' // Replace with your public key
+        publicKey
       );
 
       setSubmitStatus('success');
       setFormData({ name: '', email: '', message: '' });
     } catch (error) {
       console.error('Email send failed:', error);
-      // For demo purposes, show success even if email fails
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', message: '' });
+      setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
     }
@@ -170,7 +173,7 @@ export default function Contact() {
               <div className="glass-card p-8">
                 <h2 className="text-2xl font-bold text-white mb-6">Send a Message</h2>
 
-                <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Name */}
                   <div>
                     <label className="block text-sm text-gray-400 mb-2">

@@ -25,10 +25,6 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location]);
-
   return (
     <>
       <motion.nav
@@ -119,6 +115,7 @@ export default function Navigation() {
                   >
                     <Link
                       to={item.path}
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
                         location.pathname === item.path
                           ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'

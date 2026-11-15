@@ -38,7 +38,7 @@ export function useTypingEffect({
       setCurrentIndex((prev) => (prev + 1) % texts.length);
       setIsTyping(true);
     }
-  }, [displayText]);
+  }, [displayText, texts]);
 
   useEffect(() => {
     if (isPaused) return;

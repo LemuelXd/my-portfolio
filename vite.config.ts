@@ -1,14 +1,26 @@
-import path from "path"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
-// https://vite.dev/config/
+const projectRoot = path.dirname(fileURLToPath(import.meta.url));
+
 export default defineConfig({
-  base: './',
+  base: "./",
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(projectRoot, "./src"),
     },
+  },
+  // Production bundles are minified and source maps are never published.
+  // This reduces casual inspection, but frontend code is still downloadable.
+  build: {
+    sourcemap: false,
+    minify: "esbuild",
+    cssMinify: true,
+  },
+  esbuild: {
+    drop: ["debugger"],
   },
 });
