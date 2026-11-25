@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import Navigation from '@/components/Navigation';
-import ParticleBackground from '@/components/3d/ParticleBackground';
+const ParticleBackground = lazy(() => import('@/components/3d/ParticleBackground'));
 
 const Home = lazy(() => import('@/pages/Home'));
 const About = lazy(() => import('@/pages/About'));
@@ -63,7 +63,9 @@ function App() {
   return (
     <Router>
       <div className="relative min-h-screen">
-        <ParticleBackground />
+        <Suspense fallback={null}>
+          <ParticleBackground />
+        </Suspense>
         <Navigation />
         <main className="relative z-10"><AnimatedRoutes /></main>
         <footer className="relative z-10 mt-4 border-t border-white/[0.07] bg-[#070b14]/60">
