@@ -1,229 +1,116 @@
 import { motion } from 'framer-motion';
+import { ArrowRight, ArrowUpRight, BookOpen, CloudSun, Dumbbell, ChartNoAxesCombined, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Github, ArrowRight, Dumbbell, BarChart3, ExternalLink, type LucideIcon } from 'lucide-react';
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: 'easeOut' as const,
-    },
-  },
-};
 
 interface Project {
   id: string;
   title: string;
+  category: string;
   description: string;
   icon: LucideIcon;
-  techStack: string[];
-  githubUrl: string;
-  internalLink?: string;
-  featured?: boolean;
+  stack: string[];
+  href: string;
+  external?: boolean;
+  status: string;
 }
 
 const projects: Project[] = [
   {
-    id: 'fitness',
-    title: 'Fitness Tracker App',
-    description:
-      'Track your workouts, monitor calories burned, and visualize your fitness progress with interactive charts and progress rings.',
-    icon: Dumbbell,
-    techStack: ['React', 'TypeScript', 'Recharts', 'LocalStorage'],
-    githubUrl: 'https://github.com',
-    internalLink: '/fitness',
-    featured: true,
+    id: 'story-spark',
+    title: 'Story Spark Studio',
+    category: 'Creative web application',
+    description: 'A child-friendly story creation experience where users can shape characters and settings, create story content, and explore narration and sharing ideas.',
+    icon: BookOpen,
+    stack: ['React', 'Local Storage', 'Interactive UI'],
+    href: 'https://story-spark-studio-72.vercel.app/',
+    external: true,
+    status: 'Live project',
   },
   {
-    id: 'dashboard',
+    id: 'weather',
+    title: 'Weather Experience',
+    category: 'Web application',
+    description: 'A weather application interface with forecast-focused information and supporting data views.',
+    icon: CloudSun,
+    stack: ['React', 'API integration', 'Responsive UI'],
+    href: '/weather',
+    status: 'Portfolio demo',
+  },
+  {
+    id: 'fitness',
+    title: 'Fitness Tracker',
+    category: 'Interactive dashboard',
+    description: 'An interface concept for tracking workouts and viewing personal fitness activity through visual summaries.',
+    icon: Dumbbell,
+    stack: ['React', 'TypeScript', 'Charts'],
+    href: '/fitness',
+    status: 'Portfolio demo',
+  },
+  {
+    id: 'analytics',
     title: 'Analytics Dashboard',
-    description:
-      'A modern analytics dashboard with data visualization, real-time updates, and responsive design.',
-    icon: BarChart3,
-    techStack: ['React', 'TypeScript', 'Recharts', 'Tailwind CSS'],
-    githubUrl: 'https://github.com',
-    internalLink: '/dashboard',
-    featured: true,
+    category: 'Data visualization',
+    description: 'A dashboard experience focused on presenting metrics and visual summaries in a clear, responsive layout.',
+    icon: ChartNoAxesCombined,
+    stack: ['React', 'TypeScript', 'Recharts'],
+    href: '/dashboard',
+    status: 'Portfolio demo',
   },
 ];
 
-function ProjectCard({ project }: { project: Project }) {
-  return (
-    <motion.div
-      variants={itemVariants}
-      className="group relative"
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const Icon = project.icon;
+  const content = (
+    <motion.article
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      whileHover={{ y: -6 }}
+      className="project-preview-card group h-full"
     >
-      {project.internalLink ? (
-        <Link to={project.internalLink}>
-          <ProjectCardContent project={project} />
-        </Link>
-      ) : (
-        <ProjectCardContent project={project} />
-      )}
-    </motion.div>
+      <div className="project-card-top">
+        <span>{String(index + 1).padStart(2, '0')} / 04</span>
+        <span className="flex items-center gap-2">{project.status}<ArrowUpRight size={15} /></span>
+      </div>
+      <div className="my-9 grid h-16 w-16 place-items-center rounded-2xl border border-cyan-200/15 bg-gradient-to-br from-cyan-300/10 to-indigo-400/10 text-cyan-200 shadow-[0_12px_40px_rgba(56,189,248,.08)] transition-transform duration-300 group-hover:rotate-3 group-hover:scale-105">
+        <Icon size={30} strokeWidth={1.5} />
+      </div>
+      <p className="project-type">{project.category}</p>
+      <h2 className="mt-2 text-2xl font-semibold text-slate-100">{project.title}</h2>
+      <p className="project-description">{project.description}</p>
+      <div className="project-tags">{project.stack.map((item) => <span key={item}>{item}</span>)}</div>
+      <span className="project-open">{project.external ? 'Open live project' : 'Explore project'} <ArrowRight size={15} /></span>
+    </motion.article>
   );
-}
 
-function ProjectCardContent({ project }: { project: Project }) {
-  return (
-    <motion.div
-      whileHover={{ y: -8 }}
-      transition={{ duration: 0.3 }}
-      className={`glass-card overflow-hidden h-full cursor-pointer ${
-        project.featured ? 'border-cyan-500/30' : ''
-      }`}
-    >
-      {/* Featured Badge */}
-      {project.featured && (
-        <div className="absolute top-4 right-4 z-10">
-          <span className="px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 text-xs font-medium">
-            Featured
-          </span>
-        </div>
-      )}
-
-      {/* Image/Icon Area */}
-      <div className="h-48 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <motion.div
-          whileHover={{ scale: 1.1, rotate: 5 }}
-          transition={{ duration: 0.3 }}
-          className="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center"
-        >
-          <project.icon className="w-10 h-10 text-cyan-400" />
-        </motion.div>
-      </div>
-
-      {/* Content */}
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
-          {project.title}
-        </h3>
-        <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-          {project.description}
-        </p>
-
-        {/* Tech Stack */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {project.techStack.map((tech) => (
-            <span
-              key={tech}
-              className="px-2 py-1 rounded-md bg-white/5 text-gray-300 text-xs"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-3">
-          {project.internalLink ? (
-            <span className="flex items-center gap-2 text-cyan-400 text-sm font-medium">
-              View Project
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </span>
-          ) : (
-            <>
-              <motion.a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-400 text-sm font-medium hover:bg-cyan-500/30 transition-colors"
-              >
-                <ExternalLink className="w-4 h-4" />
-                Live Demo
-              </motion.a>
-              <motion.a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-gray-300 text-sm font-medium hover:bg-white/10 transition-colors"
-              >
-                <Github className="w-4 h-4" />
-                Code
-              </motion.a>
-            </>
-          )}
-        </div>
-      </div>
-    </motion.div>
+  return project.external ? (
+    <a href={project.href} target="_blank" rel="noreferrer" className="block h-full" aria-label={`Open ${project.title} in a new tab`}>{content}</a>
+  ) : (
+    <Link to={project.href} className="block h-full" aria-label={`Explore ${project.title}`}>{content}</Link>
   );
 }
 
 export default function Projects() {
   return (
-    <div className="min-h-screen pt-24 pb-16 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 tech-grid opacity-30" />
-      <div className="absolute top-1/3 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/3 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <span className="inline-block px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-sm font-medium mb-4">
-              My Work
-            </span>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
-              <span className="text-white">Featured </span>
-              <span className="gradient-text">Projects</span>
-            </h1>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              A collection of projects showcasing my skills in frontend development,
-              from interactive web applications to responsive designs.
-            </p>
-          </motion.div>
-
-          {/* Projects Grid */}
-          <div className="grid md:grid-cols-2 gap-8">
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-
-          {/* CTA */}
-          <motion.div variants={itemVariants} className="mt-16 text-center">
-            <p className="text-gray-400 mb-6">
-              Want to see more of my work?
-            </p>
-            <motion.a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white/5 border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300"
-            >
-              <Github className="w-5 h-5" />
-              View All Projects on GitHub
-            </motion.a>
-          </motion.div>
-        </motion.div>
+    <div className="relative min-h-screen overflow-hidden pb-20 pt-28">
+      <div className="hero-grid pointer-events-none absolute inset-0 opacity-30" />
+      <div className="hero-glow hero-glow-one pointer-events-none" />
+      <div className="section-shell relative z-10">
+        <motion.header initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mb-14 max-w-3xl">
+          <p className="section-kicker mb-4">SELECTED WORK & EXPERIMENTS</p>
+          <h1 className="section-title">Projects built with <span className="gradient-text">curiosity.</span></h1>
+          <p className="hero-description mt-5 max-w-2xl">A selection of applications and interface explorations. Some are live projects; others are interactive demos within this portfolio.</p>
+        </motion.header>
+        <div className="grid gap-5 md:grid-cols-2">
+          {projects.map((project, index) => <ProjectCard key={project.id} project={project} index={index} />)}
+        </div>
+        <div className="closing-panel mt-16">
+          <p className="section-kicker">MORE EXPERIMENTS</p>
+          <h2 className="section-title mt-3">The code keeps <span className="gradient-text">evolving.</span></h2>
+          <p className="hero-description mt-3 max-w-xl">Explore the repositories and ongoing work on GitHub.</p>
+          <a href="https://github.com/LemuelXd" target="_blank" rel="noreferrer" className="button-primary mt-6 inline-flex">Visit my GitHub <ArrowUpRight size={17} /></a>
+        </div>
       </div>
     </div>
   );
