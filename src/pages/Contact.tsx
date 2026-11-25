@@ -46,7 +46,7 @@ const contactInfo = [
     icon: MapPin,
     label: 'Location',
     value: 'Nairobi, Kenya',
-    href: '#',
+    href: 'https://www.google.com/maps/search/?api=1&query=Kenya',
   },
 ];
 
