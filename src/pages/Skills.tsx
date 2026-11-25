@@ -5,7 +5,7 @@ import {
   SiTypescript,
   SiJavascript,
   SiHtml5,
-  SiCss3,
+  SiCss,
   SiTailwindcss,
   SiGit,
   SiGithub,
@@ -28,7 +28,7 @@ const coreTechnologies: Technology[] = [
   { name: 'JavaScript', icon: SiJavascript, color: '#F7DF1E' },
   { name: 'TypeScript', icon: SiTypescript, color: '#3178C6' },
   { name: 'HTML5', icon: SiHtml5, color: '#E34F26' },
-  { name: 'CSS3', icon: SiCss3, color: '#1572B6' },
+  { name: 'CSS3', icon: SiCss, color: '#1572B6' },
   { name: 'Tailwind CSS', icon: SiTailwindcss, color: '#06B6D4' },
 ];
 
