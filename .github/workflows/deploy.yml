@@ -1,9 +1,7 @@
 name: Build and deploy to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
+  # Vercel is the production host; keep GitHub Pages available as an opt-in manual deployment.
   workflow_dispatch:
 
 permissions:
