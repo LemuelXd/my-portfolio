@@ -50,7 +50,7 @@ const highlights = [
 const personalInfo = [
   { icon: GraduationCap, label: 'Education', value: 'Software Engineering Student' },
   { icon: MapPin, label: 'Location', value: 'Nairobi, Kenya' },
-  { icon: Calendar, label: 'Experience', value: '2+ Years' },
+  { icon: Calendar, label: 'Current Focus', value: 'Frontend Development' },
   { icon: Mail, label: 'Email', value: 'njorogelem@gmail.com' },
 ];
 
