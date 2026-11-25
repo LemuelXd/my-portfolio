@@ -29,27 +29,19 @@ const reveal = {
 const projects = [
   {
     number: '01',
-    title: 'Story Spark Studio',
-    type: 'Creative storytelling platform',
-    description: 'A child-friendly story creation experience with customizable characters, narration, and shareable stories.',
-    href: 'https://story-spark-studio-72.vercel.app/',
-    tags: ['React', 'Interactive UI', 'Creative tools'],
+    title: 'LostLink AI',
+    type: 'Collaborative lost & found platform',
+    description: 'A responsive lost-property frontend prototype for reporting missing and found items and exploring possible matches.',
+    href: 'https://ai-lostlink.vercel.app/',
+    tags: ['React 19', 'TypeScript', 'Framer Motion'],
   },
   {
     number: '02',
-    title: 'Weather Experience',
-    type: 'Weather application',
-    description: 'A weather-focused interface built to make forecasts and useful conditions easier to explore.',
-    href: '/weather',
-    tags: ['API integration', 'React', 'Data UI'],
-  },
-  {
-    number: '03',
-    title: 'Portfolio & Experiments',
-    type: 'Ongoing development',
-    description: 'A growing collection of interface experiments, dashboards, and practical software projects.',
-    href: 'https://github.com/LemuelXd',
-    tags: ['TypeScript', 'UI engineering', 'Learning'],
+    title: 'Story Spark Studio',
+    type: 'Interactive storytelling platform',
+    description: 'A child-friendly story creation experience with customizable characters, narration, and shareable stories.',
+    href: 'https://story-spark-studio-72.vercel.app/',
+    tags: ['React', 'Interactive UI', 'Creative tools'],
   },
 ];
 
