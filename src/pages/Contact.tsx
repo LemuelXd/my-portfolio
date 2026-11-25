@@ -5,8 +5,6 @@ import {
   MapPin,
   Send,
   Github,
-  Linkedin,
-  Twitter,
   CheckCircle,
   AlertCircle,
   Loader2,
@@ -46,14 +44,12 @@ const contactInfo = [
     icon: MapPin,
     label: 'Location',
     value: 'Nairobi, Kenya',
-    href: '#',
+    href: 'https://www.google.com/maps/search/?api=1&query=Kenya',
   },
 ];
 
 const socialLinks = [
-  { icon: Github, label: 'GitHub', href: 'https://github.com' },
-  { icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com' },
-  { icon: Twitter, label: 'Twitter', href: 'https://twitter.com' },
+  { icon: Github, label: 'GitHub', href: 'https://github.com/LemuelXd' },
 ];
 
 export default function Contact() {
@@ -324,7 +320,7 @@ export default function Contact() {
               {/* Social Links */}
               <div className="glass-card p-6">
                 <h3 className="text-lg font-semibold text-white mb-4">
-                  Connect on Social Media
+                  Find me online
                 </h3>
                 <div className="flex gap-4">
                   {socialLinks.map((social) => (
@@ -351,9 +347,8 @@ export default function Contact() {
                   <span className="text-green-400 font-medium">Available for Work</span>
                 </div>
                 <p className="text-gray-400 text-sm leading-relaxed">
-                  I'm currently open to internship opportunities and freelance projects.
-                  Whether you need a new website, web application, or just want to chat
-                  about tech, feel free to reach out!
+                  I'm interested in suitable internship opportunities and learning collaborations.
+                  I also enjoy connecting with people who are building useful software and exploring technology.
                 </p>
               </div>
 
@@ -363,8 +358,7 @@ export default function Contact() {
                   Quick Response
                 </h3>
                 <p className="text-gray-400 text-sm">
-                  I typically respond to messages within 24 hours. For urgent inquiries,
-                  please reach out via email directly.
+                  I’ll respond as soon as I can. If the form is unavailable, you can contact me directly by email.
                 </p>
               </div>
             </motion.div>

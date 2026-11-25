@@ -1,12 +1,11 @@
-import { motion, useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import type { IconType } from 'react-icons';
 import {
   SiReact,
   SiTypescript,
   SiJavascript,
   SiHtml5,
-  SiCss,
+  SiCss3,
   SiTailwindcss,
   SiGit,
   SiGithub,
@@ -14,256 +13,105 @@ import {
   SiNodedotjs,
   SiPython,
   SiNextdotjs,
+  SiPostgresql,
 } from 'react-icons/si';
+import { Database, Layout, Smartphone, Sparkles } from 'lucide-react';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: 'easeOut' as const,
-    },
-  },
-};
-
-interface Skill {
+interface Technology {
   name: string;
   icon: IconType;
-  level: number;
   color: string;
-  twColor: string;
 }
 
-const skills: Skill[] = [
-  { name: 'React', icon: SiReact, level: 85, color: '#61DAFB', twColor: 'text-[#61DAFB]' },
-  { name: 'TypeScript', icon: SiTypescript, level: 80, color: '#3178C6', twColor: 'text-[#3178C6]' },
-  { name: 'JavaScript', icon: SiJavascript, level: 90, color: '#F7DF1E', twColor: 'text-[#F7DF1E]' },
-  { name: 'HTML5', icon: SiHtml5, level: 95, color: '#E34F26', twColor: 'text-[#E34F26]' },
-  { name: 'CSS3', icon: SiCss, level: 90, color: '#1572B6', twColor: 'text-[#1572B6]' },
-  { name: 'Tailwind CSS', icon: SiTailwindcss, level: 88, color: '#06B6D4', twColor: 'text-[#06B6D4]' },
+const coreTechnologies: Technology[] = [
+  { name: 'React', icon: SiReact, color: '#61DAFB' },
+  { name: 'JavaScript', icon: SiJavascript, color: '#F7DF1E' },
+  { name: 'TypeScript', icon: SiTypescript, color: '#3178C6' },
+  { name: 'HTML5', icon: SiHtml5, color: '#E34F26' },
+  { name: 'CSS3', icon: SiCss3, color: '#1572B6' },
+  { name: 'Tailwind CSS', icon: SiTailwindcss, color: '#06B6D4' },
 ];
 
-const additionalSkills = [
-  { name: 'Git', icon: SiGit, level: 75, color: '#F05032', twColor: 'text-[#F05032]' },
-  { name: 'GitHub', icon: SiGithub, level: 80, color: '#FFFFFF', twColor: 'text-white' },
-  { name: 'Figma', icon: SiFigma, level: 70, color: '#F24E1E', twColor: 'text-[#F24E1E]' },
-  { name: 'Node.js', icon: SiNodedotjs, level: 65, color: '#339933', twColor: 'text-[#339933]' },
-  { name: 'Python', icon: SiPython, level: 60, color: '#3776AB', twColor: 'text-[#3776AB]' },
-  { name: 'Next.js', icon: SiNextdotjs, level: 70, color: '#FFFFFF', twColor: 'text-white' },
+const tools: Technology[] = [
+  { name: 'Git', icon: SiGit, color: '#F05032' },
+  { name: 'GitHub', icon: SiGithub, color: '#E2E8F0' },
+  { name: 'Figma', icon: SiFigma, color: '#F24E1E' },
 ];
 
-function CircularProgress({ skill, delay }: { skill: Skill; delay: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-  const [isHovered, setIsHovered] = useState(false);
+const exploring: Technology[] = [
+  { name: 'Node.js', icon: SiNodedotjs, color: '#80C783' },
+  { name: 'Next.js', icon: SiNextdotjs, color: '#E2E8F0' },
+  { name: 'Python', icon: SiPython, color: '#8DB6E2' },
+  { name: 'PostgreSQL', icon: SiPostgresql, color: '#7DB7D8' },
+];
 
-  const radius = 45;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (skill.level / 100) * circumference;
-
-  return (
-    <div
-      ref={ref}
-      className="relative flex flex-col items-center"
-      style={{
-        transform: isHovered ? 'perspective(1000px) rotateY(10deg) rotateX(-5deg)' : 'none',
-        transition: 'transform 0.3s ease',
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={isInView ? { opacity: 1, scale: 1 } : {}}
-        transition={{ delay, duration: 0.5 }}
-        className="relative w-28 h-28"
-      >
-        {/* Background circle */}
-        <svg className="w-full h-full transform -rotate-90">
-          <circle
-            cx="56"
-            cy="56"
-            r={radius}
-            fill="none"
-            stroke="rgba(255,255,255,0.1)"
-            strokeWidth="8"
-          />
-          {/* Progress circle */}
-          <motion.circle
-            cx="56"
-            cy="56"
-            r={radius}
-            fill="none"
-            stroke={skill.color}
-            strokeWidth="8"
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            initial={{ strokeDashoffset: circumference }}
-            animate={isInView ? { strokeDashoffset } : {}}
-            transition={{ delay: delay + 0.3, duration: 1.5, ease: 'easeOut' }}
-            style={{
-              filter: `drop-shadow(0 0 8px ${skill.color}40)`,
-            }}
-          />
-        </svg>
-        {/* Icon */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          {(() => {
-            const Icon = skill.icon;
-            const className = `w-10 h-10 transition-transform duration-300 ${skill.twColor} ${isHovered ? 'scale-125' : 'scale-100'}`;
-            return <Icon className={className} />;
-          })()}
-        </div>
-      </motion.div>
-      {/* Label */}
-      <div className="mt-4 text-center">
-        <h3 className="text-white font-semibold mb-1">{skill.name}</h3>
-        <span className="text-cyan-400 font-mono text-sm">{skill.level}%</span>
-      </div>
-    </div>
-  );
-}
-
-function LinearProgress({ skill, delay }: { skill: Skill; delay: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-
+function TechCard({ item, index }: { item: Technology; index: number }) {
+  const Icon = item.icon;
   return (
     <motion.div
-      ref={ref}
-      initial={{ opacity: 0, x: -20 }}
-      animate={isInView ? { opacity: 1, x: 0 } : {}}
-      transition={{ delay, duration: 0.5 }}
-      className="group"
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.4, delay: index * 0.05 }}
+      whileHover={{ y: -4 }}
+      className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.025] p-4 transition-colors hover:border-cyan-200/20 hover:bg-cyan-200/[0.035]"
     >
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-3">
-          {(() => {
-            const Icon = skill.icon;
-            return <Icon className={`w-5 h-5 ${skill.twColor}`} />;
-          })()}
-          <span className="text-white font-medium">{skill.name}</span>
-        </div>
-        <span className="text-cyan-400 font-mono text-sm">{skill.level}%</span>
-      </div>
-      <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-        <motion.div
-          className="h-full rounded-full"
-          animate={isInView ? { width: `${skill.level}%` } : { width: 0 }}
-          transition={{ delay: delay + 0.3, duration: 1.2, ease: 'easeOut' }}
-          style={{
-            background: `linear-gradient(90deg, ${skill.color}80, ${skill.color})`,
-          }}
-        />
-      </div>
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/[0.045]">
+        <Icon size={22} style={{ color: item.color }} />
+      </span>
+      <span className="text-sm font-semibold text-slate-200">{item.name}</span>
     </motion.div>
   );
 }
 
 export default function Skills() {
   return (
-    <div className="min-h-screen pt-24 pb-16 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 tech-grid opacity-30" />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+    <div className="relative min-h-screen overflow-hidden pb-24 pt-28">
+      <div className="hero-grid pointer-events-none absolute inset-0 opacity-30" />
+      <div className="hero-glow hero-glow-two pointer-events-none" />
+      <div className="section-shell relative z-10">
+        <motion.header initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mb-14 max-w-3xl">
+          <p className="section-kicker mb-4">TOOLS, TECHNOLOGIES & PRACTICE</p>
+          <h1 className="section-title">What I use to <span className="gradient-text">build.</span></h1>
+          <p className="hero-description mt-5 max-w-2xl">A practical snapshot of the technologies I work with, the tools in my workflow, and the areas I’m actively learning. I prefer showing my current focus over assigning arbitrary proficiency percentages.</p>
+        </motion.header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <span className="inline-block px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-sm font-medium mb-4">
-              My Skills
-            </span>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
-              <span className="text-white">Technical </span>
-              <span className="gradient-text">Expertise</span>
-            </h1>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              A comprehensive overview of my technical skills and proficiency levels
-              in various web technologies.
-            </p>
-          </motion.div>
+        <section className="mb-12">
+          <div className="mb-5 flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-xl border border-cyan-200/15 bg-cyan-200/[0.06] text-cyan-200"><Layout size={19} /></span>
+            <div><h2 className="text-xl font-semibold text-slate-100">Core web technologies</h2><p className="mt-1 text-xs text-slate-500">The main tools I practise and build with</p></div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{coreTechnologies.map((item, index) => <TechCard key={item.name} item={item} index={index} />)}</div>
+        </section>
 
-          {/* Main Skills - Circular Progress */}
-          <motion.div variants={itemVariants} className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-8 text-center">
-              Core Technologies
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8">
-              {skills.map((skill, index) => (
-                <CircularProgress key={skill.name} skill={skill} delay={index * 0.1} />
-              ))}
+        <div className="grid gap-10 lg:grid-cols-2">
+          <section>
+            <div className="mb-5 flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-xl border border-indigo-200/15 bg-indigo-200/[0.06] text-indigo-200"><Smartphone size={19} /></span>
+              <div><h2 className="text-xl font-semibold text-slate-100">Design & workflow tools</h2><p className="mt-1 text-xs text-slate-500">Supporting my development process</p></div>
             </div>
-          </motion.div>
-
-          {/* Additional Skills - Linear Progress */}
-          <motion.div variants={itemVariants}>
-            <h2 className="text-2xl font-bold text-white mb-8 text-center">
-              Additional Skills
-            </h2>
-            <div className="glass-card p-8">
-              <div className="grid md:grid-cols-2 gap-6">
-                {additionalSkills.map((skill, index) => (
-                  <LinearProgress key={skill.name} skill={skill} delay={index * 0.1} />
-                ))}
-              </div>
+            <div className="grid gap-3 sm:grid-cols-2">{tools.map((item, index) => <TechCard key={item.name} item={item} index={index} />)}</div>
+          </section>
+          <section>
+            <div className="mb-5 flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-xl border border-violet-200/15 bg-violet-200/[0.06] text-violet-200"><Sparkles size={19} /></span>
+              <div><h2 className="text-xl font-semibold text-slate-100">Currently exploring</h2><p className="mt-1 text-xs text-slate-500">Areas I’m expanding my knowledge in</p></div>
             </div>
-          </motion.div>
+            <div className="grid gap-3 sm:grid-cols-2">{exploring.map((item, index) => <TechCard key={item.name} item={item} index={index} />)}</div>
+          </section>
+        </div>
 
-          {/* Skill Categories */}
-          <motion.div variants={itemVariants} className="mt-16 grid sm:grid-cols-3 gap-6">
-            {[
-              {
-                title: 'Frontend',
-                skills: ['React', 'TypeScript', 'Tailwind CSS', 'Responsive Design'],
-              },
-              {
-                title: 'Tools',
-                skills: ['Git', 'VS Code', 'Figma', 'Chrome DevTools'],
-              },
-              {
-                title: 'Learning',
-                skills: ['Node.js', 'Next.js', 'PostgreSQL', 'Docker'],
-              },
-            ].map((category) => (
-              <motion.div
-                key={category.title}
-                whileHover={{ scale: 1.02 }}
-                className="glass-card p-6"
-              >
-                <h3 className="text-lg font-semibold text-white mb-4">{category.title}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {category.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-sm"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </motion.div>
+        <section className="closing-panel mt-14">
+          <div className="relative z-10">
+            <p className="section-kicker">BEYOND THE FRAMEWORKS</p>
+            <h2 className="section-title mt-3">The fundamentals <span className="gradient-text">matter.</span></h2>
+            <div className="mt-7 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-xl border border-white/[0.08] bg-black/10 p-4"><Database className="mb-3 text-cyan-200" size={21} /><h3 className="font-semibold text-slate-100">Database concepts</h3><p className="mt-2 text-sm leading-relaxed text-slate-400">Building understanding of data organisation and database management.</p></div>
+              <div className="rounded-xl border border-white/[0.08] bg-black/10 p-4"><Layout className="mb-3 text-cyan-200" size={21} /><h3 className="font-semibold text-slate-100">UI/UX principles</h3><p className="mt-2 text-sm leading-relaxed text-slate-400">Applying usability, layout, and interaction principles to interfaces.</p></div>
+              <div className="rounded-xl border border-white/[0.08] bg-black/10 p-4"><Smartphone className="mb-3 text-cyan-200" size={21} /><h3 className="font-semibold text-slate-100">Responsive design</h3><p className="mt-2 text-sm leading-relaxed text-slate-400">Creating layouts that adapt across screen sizes and devices.</p></div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

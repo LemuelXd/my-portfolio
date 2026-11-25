@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Code2 } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowUpRight, Code2, Menu, X } from 'lucide-react';
 
 const navItems = [
   { path: '/', label: 'Home' },
@@ -17,120 +17,99 @@ export default function Navigation() {
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 24);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileMenuOpen]);
+
   return (
     <>
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled
-            ? 'backdrop-blur-xl bg-black/50 border-b border-cyan-500/20'
-            : 'bg-transparent'
-        }`}
+      <motion.header
+        initial={{ y: -70, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${isScrolled ? 'border-b border-white/[0.08] bg-[#070b14]/85 shadow-lg shadow-black/10 backdrop-blur-2xl' : 'bg-transparent'}`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group">
-              <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.5 }}
-                className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center"
-              >
-                <Code2 className="w-5 h-5 text-black" />
-              </motion.div>
-              <span className="text-xl font-bold gradient-text hidden sm:block">
-                Lemuel
-              </span>
-            </Link>
+        <nav className="section-shell flex h-[76px] items-center justify-between" aria-label="Main navigation">
+          <Link to="/" className="group inline-flex items-center gap-3" aria-label="Lemuel home">
+            <span className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl border border-cyan-200/20 bg-gradient-to-br from-cyan-300/20 to-indigo-400/20 text-cyan-100 shadow-[0_0_28px_rgba(56,189,248,.12)] transition-transform duration-300 group-hover:rotate-6">
+              <Code2 size={20} />
+            </span>
+            <span className="font-['Space_Grotesk'] text-lg font-bold tracking-tight text-slate-100">lemuel<span className="text-cyan-300">.</span></span>
+          </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className="relative px-4 py-2 group"
-                >
-                  <span
-                    className={`text-sm font-medium transition-colors duration-300 ${
-                      location.pathname === item.path
-                        ? 'text-cyan-400'
-                        : 'text-gray-300 group-hover:text-white'
-                    }`}
-                  >
-                    {item.label}
-                  </span>
-                  {location.pathname === item.path && (
-                    <motion.div
-                      layoutId="activeNav"
-                      className="absolute inset-0 bg-cyan-500/10 rounded-lg border border-cyan-500/30"
-                      transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-cyan-400 group-hover:w-1/2 transition-all duration-300" />
+          <div className="hidden items-center gap-1 md:flex">
+            {navItems.map((item) => {
+              const active = location.pathname === item.path;
+              return (
+                <Link key={item.path} to={item.path} aria-current={active ? 'page' : undefined} className={`relative rounded-xl px-4 py-2.5 text-[.78rem] font-semibold transition-colors duration-200 ${active ? 'text-cyan-200' : 'text-slate-400 hover:text-slate-100'}`}>
+                  {active && <motion.span layoutId="nav-active" className="absolute inset-0 rounded-xl border border-cyan-300/15 bg-cyan-300/[0.07]" transition={{ type: 'spring', stiffness: 360, damping: 30 }} />}
+                  <span className="relative z-10">{item.label}</span>
                 </Link>
-              ))}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-cyan-400"
-            >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </motion.button>
+              );
+            })}
           </div>
-        </div>
-      </motion.nav>
 
-      {/* Mobile Menu */}
+          <div className="hidden md:block">
+            <a href="https://github.com/LemuelXd" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.035] px-4 py-2.5 text-xs font-semibold text-slate-300 transition-all hover:border-cyan-300/30 hover:bg-cyan-300/[0.07] hover:text-cyan-100">
+              GitHub <ArrowUpRight size={14} />
+            </a>
+          </div>
+
+          <button
+            type="button"
+            className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-cyan-100 transition-colors hover:bg-white/[0.08] md:hidden"
+            onClick={() => setIsMobileMenuOpen((open) => !open)}
+            aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-navigation"
+          >
+            {isMobileMenuOpen ? <X size={19} /> : <Menu size={19} />}
+          </button>
+        </nav>
+      </motion.header>
+
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            id="mobile-navigation"
+            initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-x-0 top-16 z-40 md:hidden"
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-x-4 top-[84px] z-40 rounded-2xl border border-white/10 bg-[#0a1220]/95 p-3 shadow-2xl shadow-black/40 backdrop-blur-2xl md:hidden"
           >
-            <div className="mx-4 mt-2 p-4 rounded-2xl backdrop-blur-xl bg-black/90 border border-cyan-500/20 shadow-2xl">
-              <div className="flex flex-col gap-2">
-                {navItems.map((item, index) => (
-                  <motion.div
-                    key={item.path}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Link
-                      to={item.path}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
-                        location.pathname === item.path
-                          ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                          : 'text-gray-300 hover:bg-white/5 hover:text-white'
-                      }`}
-                    >
-                      <span className="font-medium">{item.label}</span>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
+            <div className="flex flex-col gap-1">
+              {navItems.map((item) => {
+                const active = location.pathname === item.path;
+                return (
+                  <Link key={item.path} to={item.path} aria-current={active ? 'page' : undefined} className={`rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${active ? 'bg-cyan-300/10 text-cyan-100' : 'text-slate-300 hover:bg-white/[0.05]'}`}>
+                    {item.label}
+                  </Link>
+                );
+              })}
+              <a href="https://github.com/LemuelXd" target="_blank" rel="noreferrer" className="mt-1 flex items-center justify-between rounded-xl border-t border-white/[0.08] px-4 py-3 text-sm font-semibold text-cyan-100">
+                GitHub <ArrowUpRight size={15} />
+              </a>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+      {isMobileMenuOpen && <button type="button" aria-label="Close navigation menu" className="fixed inset-0 z-30 cursor-default bg-black/30 md:hidden" onClick={() => setIsMobileMenuOpen(false)} />}
     </>
   );
 }

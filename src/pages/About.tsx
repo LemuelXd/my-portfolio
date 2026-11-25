@@ -50,7 +50,7 @@ const highlights = [
 const personalInfo = [
   { icon: GraduationCap, label: 'Education', value: 'Software Engineering Student' },
   { icon: MapPin, label: 'Location', value: 'Nairobi, Kenya' },
-  { icon: Calendar, label: 'Experience', value: '2+ Years' },
+  { icon: Calendar, label: 'Current Focus', value: 'Frontend Development' },
   { icon: Mail, label: 'Email', value: 'njorogelem@gmail.com' },
 ];
 
@@ -96,23 +96,23 @@ export default function About() {
                 </h2>
                 <div className="space-y-4 text-gray-300 leading-relaxed">
                   <p>
-                    I'm a Kenyan software engineering student with a deep passion for building
-                    interactive web applications that make a difference. My journey into tech
-                    started with curiosity about how websites work, and that curiosity has evolved
-                    into a dedicated pursuit of excellence in frontend development.
+                    I'm a Software Engineering student at Kirinyaga University in Kenya. I enjoy building
+                    interactive web applications and learning how thoughtful design and reliable
+                    code can make digital tools easier to use. My interest in technology has grown through
+                    hands-on practice and experimenting with web development.
                   </p>
                   <p>
-                    With a strong foundation in modern web technologies like React, TypeScript,
-                    and Tailwind CSS, I specialize in creating responsive, user-friendly interfaces
-                    that deliver exceptional user experiences. I'm particularly interested in
-                    AI-powered storytelling platforms and exploring how technology can be used
-                    to create more engaging narratives.
+                    I work with technologies including React, JavaScript, TypeScript, HTML, CSS,
+                    and Tailwind CSS. I’m also developing my understanding of UI/UX principles
+                    and database management. I’m particularly interested in
+                    interactive experiences and practical AI integration, including storytelling tools
+                    that make digital experiences more engaging.
                   </p>
                   <p>
-                    Currently, I'm expanding my skills towards full-stack development while
-                    maintaining my focus on creating polished, performant frontend experiences.
-                    I'm always eager to learn new technologies and take on challenging projects
-                    that push my boundaries.
+                    I’m continuing to strengthen my programming fundamentals while exploring broader
+                    software engineering concepts.
+                    I value hands-on practice, clear problem-solving, and steadily improving
+                    the quality of the projects I build.
                   </p>
                 </div>
               </div>
@@ -179,8 +179,8 @@ export default function About() {
                   <span className="text-cyan-400 font-medium">Fun Fact</span>
                 </div>
                 <p className="text-gray-300 text-sm">
-                  When I'm not coding, you'll find me exploring new tech trends, contributing to
-                  open-source projects, or mentoring aspiring developers in my community.
+                  Outside of project work, I enjoy researching technology trends, exploring AI integration,
+                  and practising the fundamentals behind the tools I use.
                 </p>
               </motion.div>
             </motion.div>
