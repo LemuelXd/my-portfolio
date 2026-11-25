@@ -1,10 +1,10 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import ParticleBackground from '@/components/3d/ParticleBackground';
 
-// Lazy load pages for better performance
 const Home = lazy(() => import('@/pages/Home'));
 const About = lazy(() => import('@/pages/About'));
 const Skills = lazy(() => import('@/pages/Skills'));
@@ -14,120 +14,46 @@ const FitnessTracker = lazy(() => import('@/pages/FitnessTracker'));
 const AnalyticsDashboard = lazy(() => import('@/pages/AnalyticsDashboard'));
 const Contact = lazy(() => import('@/pages/Contact'));
 
-// Page transition wrapper
 function PageTransition({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
   );
 }
 
-// Loading fallback
 function PageLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center" role="status" aria-label="Loading page">
       <motion.div
         animate={{ rotate: 360 }}
         transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-        className="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full"
+        className="w-10 h-10 border-2 border-cyan-300/20 border-t-cyan-300 rounded-full"
       />
     </div>
   );
 }
 
-// Animated routes component
 function AnimatedRoutes() {
   const location = useLocation();
 
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route
-          path="/"
-          element={
-            <PageTransition>
-              <Suspense fallback={<PageLoader />}>
-                <Home />
-              </Suspense>
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <PageTransition>
-              <Suspense fallback={<PageLoader />}>
-                <About />
-              </Suspense>
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/skills"
-          element={
-            <PageTransition>
-              <Suspense fallback={<PageLoader />}>
-                <Skills />
-              </Suspense>
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/projects"
-          element={
-            <PageTransition>
-              <Suspense fallback={<PageLoader />}>
-                <Projects />
-              </Suspense>
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/weather"
-          element={
-            <PageTransition>
-              <Suspense fallback={<PageLoader />}>
-                <WeatherApp />
-              </Suspense>
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/fitness"
-          element={
-            <PageTransition>
-              <Suspense fallback={<PageLoader />}>
-                <FitnessTracker />
-              </Suspense>
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <PageTransition>
-              <Suspense fallback={<PageLoader />}>
-                <AnalyticsDashboard />
-              </Suspense>
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <PageTransition>
-              <Suspense fallback={<PageLoader />}>
-                <Contact />
-              </Suspense>
-            </PageTransition>
-          }
-        />
+        <Route path="/" element={<PageTransition><Suspense fallback={<PageLoader />}><Home /></Suspense></PageTransition>} />
+        <Route path="/about" element={<PageTransition><Suspense fallback={<PageLoader />}><About /></Suspense></PageTransition>} />
+        <Route path="/skills" element={<PageTransition><Suspense fallback={<PageLoader />}><Skills /></Suspense></PageTransition>} />
+        <Route path="/projects" element={<PageTransition><Suspense fallback={<PageLoader />}><Projects /></Suspense></PageTransition>} />
+        <Route path="/weather" element={<PageTransition><Suspense fallback={<PageLoader />}><WeatherApp /></Suspense></PageTransition>} />
+        <Route path="/fitness" element={<PageTransition><Suspense fallback={<PageLoader />}><FitnessTracker /></Suspense></PageTransition>} />
+        <Route path="/dashboard" element={<PageTransition><Suspense fallback={<PageLoader />}><AnalyticsDashboard /></Suspense></PageTransition>} />
+        <Route path="/contact" element={<PageTransition><Suspense fallback={<PageLoader />}><Contact /></Suspense></PageTransition>} />
+        <Route path="*" element={<PageTransition><div className="min-h-[65vh] flex flex-col items-center justify-center px-6 text-center"><p className="section-kicker">404 · PAGE NOT FOUND</p><h1 className="section-title mt-4">This route doesn’t exist.</h1><a className="button-primary mt-7" href="/">Back home <ArrowUpRight size={17} /></a></div></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );
@@ -137,49 +63,20 @@ function App() {
   return (
     <Router>
       <div className="relative min-h-screen">
-        {/* 3D Background */}
         <ParticleBackground />
-        
-        {/* Navigation */}
         <Navigation />
-        
-        {/* Main Content */}
-        <main className="relative z-10">
-          <AnimatedRoutes />
-        </main>
-        
-        {/* Footer */}
-        <footer className="relative z-10 py-8 border-t border-white/5">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-gray-500 text-sm">
-                © {new Date().getFullYear()} Lemuel. All rights reserved.
-              </div>
-              <div className="flex items-center gap-6">
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-500 hover:text-cyan-400 transition-colors text-sm"
-                >
-                  GitHub
-                </a>
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-500 hover:text-cyan-400 transition-colors text-sm"
-                >
-                  LinkedIn
-                </a>
-                <a
-                  href="mailto:njorogelem@gmail.com"
-                  className="text-gray-500 hover:text-cyan-400 transition-colors text-sm"
-                >
-                  Email
-                </a>
-              </div>
+        <main className="relative z-10"><AnimatedRoutes /></main>
+        <footer className="relative z-10 mt-4 border-t border-white/[0.07] bg-[#070b14]/60">
+          <div className="section-shell flex flex-col sm:flex-row items-center justify-between gap-4 py-7">
+            <div className="text-center sm:text-left">
+              <p className="text-sm font-semibold text-slate-300">Lemuel Njoroge</p>
+              <p className="mt-1 text-xs text-slate-500">Learning, building, and improving one project at a time.</p>
             </div>
+            <div className="flex items-center gap-5 text-xs text-slate-400">
+              <a href="https://github.com/LemuelXd" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-cyan-200">GitHub <ArrowUpRight size={13} /></a>
+              <a href="mailto:njorogelem@gmail.com" className="inline-flex items-center gap-1.5 transition-colors hover:text-cyan-200">Email <ArrowUpRight size={13} /></a>
+            </div>
+            <p className="text-[11px] text-slate-600">© {new Date().getFullYear()} · Built with curiosity.</p>
           </div>
         </footer>
       </div>
