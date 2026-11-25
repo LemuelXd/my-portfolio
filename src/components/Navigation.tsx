@@ -13,8 +13,9 @@ const navItems = [
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mobileMenuPath, setMobileMenuPath] = useState<string | null>(null);
   const location = useLocation();
+  const isMobileMenuOpen = mobileMenuPath === location.pathname;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 24);
@@ -26,7 +27,7 @@ export default function Navigation() {
   useEffect(() => {
     if (!isMobileMenuOpen) return;
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setIsMobileMenuOpen(false);
+      if (event.key === 'Escape') setMobileMenuPath(null);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -69,7 +70,7 @@ export default function Navigation() {
           <button
             type="button"
             className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-cyan-100 transition-colors hover:bg-white/[0.08] md:hidden"
-            onClick={() => setIsMobileMenuOpen((open) => !open)}
+            onClick={() => setMobileMenuPath((current) => current === location.pathname ? null : location.pathname)}
             aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-navigation"
@@ -96,7 +97,7 @@ export default function Navigation() {
                   <Link
                     key={item.path}
                     to={item.path}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => setMobileMenuPath(null)}
                     aria-current={active ? 'page' : undefined}
                     className={`rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${active ? 'bg-cyan-300/[0.10] text-cyan-100' : 'text-slate-300 hover:bg-white/[0.05] hover:text-white'}`}
                   >
@@ -111,7 +112,7 @@ export default function Navigation() {
           </motion.div>
         )}
       </AnimatePresence>
-      {isMobileMenuOpen && <button type="button" aria-label="Close navigation menu" className="fixed inset-0 z-30 cursor-default bg-black/30 md:hidden" onClick={() => setIsMobileMenuOpen(false)} />}
+      {isMobileMenuOpen && <button type="button" aria-label="Close navigation menu" className="fixed inset-0 z-30 cursor-default bg-black/30 md:hidden" onClick={() => setMobileMenuPath(null)} />}
     </>
   );
 }
